@@ -9,23 +9,39 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: HomePage(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int count = 0;
+
   void decrement() {
-    print('Decrement');
+    setState(() {
+      count--;
+    });
+    print(count);
   }
 
   void increment() {
-    print('Increment');
+    setState(() {
+      count++;
+    });
+    print(count);
   }
+
+  bool get isEmpty => count == 0;
+  bool get isFull => count == 20;
 
   @override
   Widget build(BuildContext context) {
@@ -41,22 +57,20 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              'Pode entrar!',
-              style: TextStyle(
+            Text(
+              isFull ? 'Lotado' : 'Pode entrar!',
+              style: const TextStyle(
                 fontSize: 26,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.all(50),
+            Padding(
+              padding: const EdgeInsets.all(50),
               child: Text(
-                '0',
+                '$count',
                 style: TextStyle(
-                  fontSize: 100,
-                  color: Colors.white,
-                ),
+                    fontSize: 100, color: isFull ? Colors.red : Colors.white),
               ),
             ),
             Row(
@@ -64,7 +78,9 @@ class HomePage extends StatelessWidget {
               children: [
                 TextButton(
                   style: TextButton.styleFrom(
-                      backgroundColor: Colors.white,
+                      backgroundColor: isEmpty
+                          ? Colors.white.withOpacity(0.2)
+                          : Colors.white,
                       fixedSize: const Size(100, 100),
                       foregroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
@@ -72,7 +88,7 @@ class HomePage extends StatelessWidget {
                         // side: BorderSide(color: Colors.green, width: 5),
                         borderRadius: BorderRadius.circular(24),
                       )),
-                  onPressed: decrement,
+                  onPressed: isEmpty ? null : decrement,
                   child: const Text(
                     'Saiu',
                     style: TextStyle(
@@ -86,7 +102,8 @@ class HomePage extends StatelessWidget {
                 ),
                 TextButton(
                   style: TextButton.styleFrom(
-                    backgroundColor: Colors.white,
+                    backgroundColor:
+                        isFull ? Colors.white.withOpacity(0.2) : Colors.white,
                     fixedSize: const Size(100, 100),
                     foregroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
@@ -95,7 +112,7 @@ class HomePage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(24),
                     ),
                   ),
-                  onPressed: increment,
+                  onPressed: isFull ? null : increment,
                   child: const Text(
                     'Entrou',
                     style: TextStyle(
